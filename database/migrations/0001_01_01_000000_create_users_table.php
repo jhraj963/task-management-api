@@ -15,9 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
+            $table->enum('role', ['admin', 'manager', 'employee'])->default('employee');
+            $table->unsignedBigInteger('organization_id')->nullable();
+            $table->foreign('organization_id')->references('id')->on('organizations')->onDelete('cascade');
+            $table->string('remember_token');
+            // $table->string('remember_token', 255)->change();
+            // $table->rememberToken(255);
             $table->timestamps();
         });
 
