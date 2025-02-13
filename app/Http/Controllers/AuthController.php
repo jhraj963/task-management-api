@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+
 class AuthController extends Controller
 {
     public function register(Request $request)
@@ -19,7 +20,7 @@ class AuthController extends Controller
             'role' => $request->role
         ]);
 
-        // টোকেন তৈরি এবং remember_token ফিল্ড আপডেট
+
         $token = JWTAuth::fromUser($user);
         $user->update(['remember_token' => $token]);
 
@@ -33,10 +34,18 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (!$token = Auth::attempt($credentials)) {
+        // Validate the credentials
+        if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return response()->json(['token' => $token]);
+        $user = Auth::user();
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+            'token_type' => 'Bearer',
+            // 'expires_in' => auth('api')->factory()->getTTL() * 60 // Expiration time
+        ]);
     }
 }

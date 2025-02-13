@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-    protected $fillable = [''];
+    protected $fillable = ['name', 'organization_id', 'status'];
 
     public function tasks()
     {
